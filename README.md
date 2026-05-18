@@ -87,7 +87,7 @@ Since the project is strictly Dockerized with custom networks, you can run the e
 1.  **Clone the repository:**
     ```bash
     git clone [https://github.com/efeerturk7/smart-ticket.git](https://github.com/efeerturk7/smart-ticket.git)
-    cd smart-ticket-backend
+    cd smart-ticket
     ```
 
 2.  **Start with Docker Compose (Builds the App & Infrastructure):**
