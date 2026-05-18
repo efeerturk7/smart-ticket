@@ -86,7 +86,7 @@ Since the project is strictly Dockerized with custom networks, you can run the e
 
 1.  **Clone the repository:**
     ```bash
-    git clone [https://github.com/efeerturk7/smart-ticket-backend.git](https://github.com/efeerturk7/smart-ticket-backend.git)
+    git clone [https://github.com/efeerturk7/smart-ticket.git](https://github.com/efeerturk7/smart-ticket.git)
     cd smart-ticket-backend
     ```
 
