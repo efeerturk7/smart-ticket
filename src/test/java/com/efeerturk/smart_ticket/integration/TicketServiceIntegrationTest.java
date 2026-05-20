@@ -29,7 +29,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Testcontainers
 class TicketServiceIntegrationTest {
 	@Container
-	static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:15-alpine");
+	static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>(DockerImageName.parse("pgvector/pgvector:pg15"))
+			.withDatabaseName("smartticket_db")
+			.withUsername("user")
+			.withPassword("password");;
 
 	@Container
 	static GenericContainer<?> redis = new GenericContainer<>("redis:7-alpine")
