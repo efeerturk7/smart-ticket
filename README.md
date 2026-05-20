@@ -7,6 +7,7 @@
 ![Redis](https://img.shields.io/badge/Redis-Cache_%26_Locks-DC382D?style=for-the-badge&logo=redis&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-Enterprise_Containerized-2496ED?style=for-the-badge&logo=docker&logoColor=white)
 ![Security](https://img.shields.io/badge/Spring_Security-JWT-6DB33F?style=for-the-badge&logo=springsecurity&logoColor=white)
+![Testing](https://img.shields.io/badge/Testing-Testcontainers_%26_Mockito-C21325?style=for-the-badge&logo=junit5&logoColor=white)
 
 **SmartTicket** is a production-ready, highly scalable REST API designed for managing high-concurrency ticket creation and processing operations.
 
@@ -39,26 +40,31 @@ This project was built strictly following Enterprise Software Engineering standa
 * **Generic API Response Wrapper:** Designed a universal `BaseResponse<T>` root entity. Every single endpoint returns this standardized envelope, ensuring a consistent contract (status codes, payload, timestamp) for frontend consumers.
 * **Auditable Base Entity:** Implemented a `@MappedSuperclass` `BaseEntity`. All JPA models extend this base class to inherit common properties automatically (`id`, `createdAt`, `updatedAt`), enforcing DRY (Don't Repeat Yourself) principles.
 * **Global Exception Handling:** Centralized error management using `@RestControllerAdvice`. Domain-specific exceptions are intercepted and translated into standardized, readable JSON error payloads, preventing stack traces from leaking to the client.
-* **High-Performance Mapping:** Utilized **MapStruct** for type-safe, compile-time object mapping between JPA Entities and DTOs, completely isolating the database layer from the presentation layer.
+* **High-Performance Mapping:** Utilized **MapStruct** for type-safe, compile-time object mapping between JPA Entities and DTOs.
 
-### 2. 🔐 Robust Security Layer
+### 2. 🧪 Enterprise-Grade Testing Strategy
+Instead of treating tests as an afterthought, the system is covered by a robust, industry-standard testing pyramid focusing on the critical path:
+* **Behavior-Driven Unit Testing (Mockito & AssertJ):** Service layers are strictly tested in isolation without loading the Spring Context. Used chained mocking techniques (for Redis `ValueOperations` and Redisson `RLock`) and verified exact execution behaviors using `times()` and `verify()`. Replaced legacy `assertEquals` with fluent AssertJ assertions (`assertThat`).
+* **Zero-Mock Integration Testing (Testcontainers):** Implemented true production-parity integration tests. Using `@Testcontainers`, the test suite automatically spins up ephemeral, real Docker containers for **PostgreSQL, Redis, and Kafka**. Utilized `@DynamicPropertySource` to inject dynamic, randomized ports into the Spring Context, ensuring the application behaves flawlessly with real infrastructure before deployment.
+
+### 3. 🔐 Robust Security Layer
 * **Spring Security 6 & JWT:** Stateless authentication architecture. Implemented custom JWT filters to parse, validate, and authorize requests efficiently.
 * **Role-Based Access Control:** Endpoints are strictly protected based on user roles and authorities.
 
-### 3. ⚡ Advanced Redis Integration
+### 4. ⚡ Advanced Redis Integration
 The Redis implementation goes far beyond basic caching:
 * **Distributed Locking (Redisson):** Solved the "Race Condition" problem during high-traffic ticket purchases. Redisson locks ensure that if 1000 users try to buy the last ticket simultaneously, only one succeeds.
 * **Distributed Rate Limiting:** Implemented a token-bucket algorithm to throttle abusive requests at the gateway level.
 * **Smart Caching:** Cache-Aside pattern implementation to significantly reduce database hits for read-heavy operations.
 
-### 4. 📨 Enterprise Event-Driven Architecture (Apache Kafka)
+### 5. 📨 Enterprise Event-Driven Architecture (Apache Kafka)
 Decoupled heavy downstream tasks using a robust Kafka implementation:
 * **Idempotent Consumer:** Uses a unique `messageId` and a check-and-set pattern with a PostgreSQL `processed_event` table to absolutely prevent duplicate message processing.
 * **Smart Retry & Dead Letter Topic (DLT):** Configured Spring Retry (`FixedBackOff`). Transient failures are retried 3 times. Fatal errors or exhausted retries are gracefully routed to a `.DLT` graveyard topic for manual inspection.
 * **Poison Pill Prevention:** Uses `ErrorHandlingDeserializer` to safely catch malformed payloads mid-air, preventing infinite consumer crash-loops.
 * **Reliable Producer:** Configured with `acks=all` and `enable.idempotence=true` for zero message loss.
 
-### 5. 🐳 Enterprise-Grade Dockerization (DevOps)
+### 6. 🐳 Enterprise-Grade Dockerization (DevOps)
 * **Custom Bridge Networking:** The entire infrastructure (DB, Redis, Kafka) is isolated within a custom Docker network (`smart-ticket-net`). External ports are intentionally closed; they can only be reached internally by the Spring Boot application (Port 8080).
 * **Resource Limits:** Strict CPU and Memory `limits` and `reservations` are defined in `docker-compose.yml` to prevent RAM-heavy containers from causing OS-level Out-Of-Memory (OOM) kills.
 
@@ -70,6 +76,7 @@ Decoupled heavy downstream tasks using a robust Kafka implementation:
 | :--- | :--- |
 | **Language** | Java 21 (LTS) |
 | **Framework** | Spring Boot 3.2.x |
+| **Testing** | JUnit 5, Mockito, AssertJ, Testcontainers |
 | **Message Broker** | Apache Kafka, Spring Kafka |
 | **Database** | PostgreSQL & Spring Data JPA |
 | **Caching & In-Memory** | Redis, Redisson (Distributed Locks & Rate Limiting) |
@@ -86,8 +93,8 @@ Since the project is strictly Dockerized with custom networks, you can run the e
 
 1.  **Clone the repository:**
     ```bash
-    git clone [https://github.com/efeerturk7/smart-ticket.git](https://github.com/efeerturk7/smart-ticket.git)
-    cd smart-ticket
+    git clone [https://github.com/efeerturk7/smart-ticket-backend.git](https://github.com/efeerturk7/smart-ticket-backend.git)
+    cd smart-ticket-backend
     ```
 
 2.  **Start with Docker Compose (Builds the App & Infrastructure):**
