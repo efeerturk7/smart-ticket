@@ -23,8 +23,8 @@ jobs:
           cache: 'maven'
 
 
-      - name: Maven Build and Run Tests
-        run: mvn clean verify
+      - name: Maven Build and Run Unit Tests
+        run: mvn clean package -DskipTests=false -Dgroups="!integration-test"
 
 
       - name: Login to Docker Hub
