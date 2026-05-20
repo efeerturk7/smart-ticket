@@ -1,72 +1,72 @@
-# 🎟️ SmartTicket - Cloud-Native Event-Driven Ticketing API
+# 🎟️ SmartTicket - Cloud-Native Event-Driven & AI-Powered Ticketing API
 
 ![Java](https://img.shields.io/badge/Java-21-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
 ![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.2.x-6DB33F?style=for-the-badge&logo=spring-boot&logoColor=white)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Relational_DB-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)
+![Spring AI](https://img.shields.io/badge/Spring_AI-Cognitive_Agent-6DB33F?style=for-the-badge&logo=spring&logoColor=white)
+![Ollama](https://img.shields.io/badge/Ollama-Local_LLM-FFFFFF?style=for-the-badge&logo=ollama&logoColor=black)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-pgvector-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)
 ![Apache Kafka](https://img.shields.io/badge/Apache_Kafka-Event_Streaming-231F20?style=for-the-badge&logo=apachekafka&logoColor=white)
 ![Redis](https://img.shields.io/badge/Redis-Cache_%26_Locks-DC382D?style=for-the-badge&logo=redis&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-Enterprise_Containerized-2496ED?style=for-the-badge&logo=docker&logoColor=white)
+![CI/CD](https://img.shields.io/badge/CI%2FCD-GitHub_Actions-2088FF?style=for-the-badge&logo=githubactions&logoColor=white)
 ![Security](https://img.shields.io/badge/Spring_Security-JWT-6DB33F?style=for-the-badge&logo=springsecurity&logoColor=white)
-![Testing](https://img.shields.io/badge/Testing-Testcontainers_%26_Mockito-C21325?style=for-the-badge&logo=junit5&logoColor=white)
 
-**SmartTicket** is a production-ready, highly scalable REST API designed for managing high-concurrency ticket creation and processing operations.
+**SmartTicket** is a production-ready, highly scalable REST API designed for managing high-concurrency ticket creation, processing operations, and automated AI-driven customer support.
 
-This project demonstrates a modern **DevOps-oriented Modular Monolith architecture**. It integrates **Clean Architecture** principles in Spring Boot, utilizes **Redis** for distributed locking and rate limiting, stores critical data in **PostgreSQL**, relies on **Apache Kafka** for fail-safe asynchronous processing, and is strictly containerized with **Docker**.
+This project demonstrates a modern **DevSecOps-oriented Modular Monolith architecture**. It integrates **Clean Architecture** principles in Spring Boot, utilizes **Redis** for distributed locking, relies on **Apache Kafka** for fail-safe asynchronous processing, features an **Enterprise Cognitive AI Agent** for L1 support, and is strictly containerized with **Docker** and automated via **CI/CD pipelines**.
 
 ---
 
 ## 🏗 System Architecture & Workflow
 
 ### ⚙️ Runtime Architecture
-How the application handles high-concurrency traffic in production:
+How the application handles high-concurrency traffic and AI operations in production:
 
-1.  **🌍 Client Request:** User sends a request via Swagger or Postman.
-2.  **🛡️ Security Layer:** Spring Security intercepts the request; JWT Filter validates the bearer token.
-3.  **🚦 Rate Limiter (Redis):** Checks if the user/IP has exceeded their request quota (preventing DDoS).
-4.  **🔒 Concurrency Control:** Redis Distributed Lock (Redisson) ensures no double-booking for the same ticket.
-5.  **☕ Spring Boot Core:** Business logic processes the request, mapping immutable DTOs to Entities via MapStruct.
-6.  **🐘 PostgreSQL:** Persists the ticket securely into the database.
-7.  **📨 Kafka Event Streaming:** A `TicketCreatedEvent` is fired asynchronously to handle downstream tasks (notifications) without blocking the HTTP response.
-8.  **📦 Standardized Response:** A Generic API Response wrapper returns a consistent payload to the client.
+1. **🌍 Client Request:** User sends a request via Swagger or Postman.
+2. **🛡️ Security Layer:** Spring Security intercepts the request; JWT Filter validates the bearer token.
+3. **🚦 Rate Limiter (Redis):** Checks if the user/IP has exceeded their request quota (preventing DDoS).
+4. **🔒 Concurrency Control:** Redis Distributed Lock (Redisson) ensures no double-booking for the same ticket.
+5. **🐘 PostgreSQL:** Persists the ticket securely into the database.
+6. **📨 Kafka Event Streaming:** A `TicketCreatedEvent` is fired asynchronously to handle downstream tasks.
+7. **🤖 AI Orchestrator (L1 Agent):** New tickets are intercepted by the **Spring AI Orchestrator**.
+    * **Advanced RAG:** Searches `pgvector` for past solutions.
+    * **Structured Output:** Categorizes urgency and sentiment (e.g., ANGRY).
+    * **HITL (Human-in-the-Loop):** Escalates severe issues directly to human agents.
+8. **📦 Standardized Response:** A Generic API Response wrapper returns a consistent payload to the client.
 
 ---
 
 ## 🚀 Key Technical Features
 
-This project was built strictly following Enterprise Software Engineering standards, focusing on maintainability, performance, and fault tolerance.
+This project was built strictly following Enterprise Software Engineering standards, focusing on maintainability, AI integration, and fault tolerance.
 
-### 1. 🏗️ Clean Architecture & Spring Boot Best Practices
-* **Immutable DTOs (Java Records):** Replaced traditional boilerplate classes with Java 21 `record`s for Data Transfer Objects. This guarantees thread-safe immutability natively and keeps the codebase clean.
-* **Generic API Response Wrapper:** Designed a universal `BaseResponse<T>` root entity. Every single endpoint returns this standardized envelope, ensuring a consistent contract (status codes, payload, timestamp) for frontend consumers.
-* **Auditable Base Entity:** Implemented a `@MappedSuperclass` `BaseEntity`. All JPA models extend this base class to inherit common properties automatically (`id`, `createdAt`, `updatedAt`), enforcing DRY (Don't Repeat Yourself) principles.
-* **Global Exception Handling:** Centralized error management using `@RestControllerAdvice`. Domain-specific exceptions are intercepted and translated into standardized, readable JSON error payloads, preventing stack traces from leaking to the client.
-* **High-Performance Mapping:** Utilized **MapStruct** for type-safe, compile-time object mapping between JPA Entities and DTOs.
+### 1. 🧠 Enterprise Cognitive AI Agent (Spring AI)
+* **Local LLM Integration:** Powered by **Ollama (Llama 3)**, ensuring 100% data privacy without external API limits.
+* **Advanced RAG Pipeline:** Utilizes PostgreSQL with the `pgvector` extension. Implements Semantic Search (Cosine Distance) to provide the LLM with accurate, hallucination-free context from past resolved tickets.
+* **Agentic Workflow & Tool Calling:** The AI functions as an Autonomous Agent, securely invoking internal Java methods (like checking ticket status in the DB) to resolve user queries dynamically.
+* **Structured Output & Sentiment Analysis:** Evaluates unstructured user complaints, extracting sentiment and urgency into immutable Java Records.
 
-### 2. 🧪 Enterprise-Grade Testing Strategy
-Instead of treating tests as an afterthought, the system is covered by a robust, industry-standard testing pyramid focusing on the critical path:
-* **Behavior-Driven Unit Testing (Mockito & AssertJ):** Service layers are strictly tested in isolation without loading the Spring Context. Used chained mocking techniques (for Redis `ValueOperations` and Redisson `RLock`) and verified exact execution behaviors using `times()` and `verify()`. Replaced legacy `assertEquals` with fluent AssertJ assertions (`assertThat`).
-* **Zero-Mock Integration Testing (Testcontainers):** Implemented true production-parity integration tests. Using `@Testcontainers`, the test suite automatically spins up ephemeral, real Docker containers for **PostgreSQL, Redis, and Kafka**. Utilized `@DynamicPropertySource` to inject dynamic, randomized ports into the Spring Context, ensuring the application behaves flawlessly with real infrastructure before deployment.
+### 2. 🏗️ Clean Architecture & Spring Boot Best Practices
+* **Immutable DTOs (Java Records):** Replaced traditional boilerplate classes with Java 21 `record`s for Data Transfer Objects.
+* **Generic API Response Wrapper:** Designed a universal `BaseResponse<T>` root entity for consistent frontend contracts.
+* **Global Exception Handling:** Centralized error management using `@RestControllerAdvice`.
 
-### 3. 🔐 Robust Security Layer
-* **Spring Security 6 & JWT:** Stateless authentication architecture. Implemented custom JWT filters to parse, validate, and authorize requests efficiently.
-* **Role-Based Access Control:** Endpoints are strictly protected based on user roles and authorities.
+### 3. 🧪 Enterprise-Grade Testing & CI/CD
+* **Continuous Integration (GitHub Actions):** Fully automated CI/CD pipeline. Every push triggers the workflow to compile code, run tests, and verify builds.
+* **Zero-Mock Integration Testing (Testcontainers):** Integration tests spin up ephemeral, real Docker containers for **PostgreSQL, Redis, and Kafka** inside the CI pipeline, guaranteeing production-parity.
+* **Behavior-Driven Unit Testing (Mockito & AssertJ):** Strict, isolated service layer testing using chained mocking techniques and AssertJ fluent assertions.
 
 ### 4. ⚡ Advanced Redis Integration
-The Redis implementation goes far beyond basic caching:
-* **Distributed Locking (Redisson):** Solved the "Race Condition" problem during high-traffic ticket purchases. Redisson locks ensure that if 1000 users try to buy the last ticket simultaneously, only one succeeds.
+* **Distributed Locking (Redisson):** Solved the "Race Condition" problem during high-traffic ticket assignments.
 * **Distributed Rate Limiting:** Implemented a token-bucket algorithm to throttle abusive requests at the gateway level.
-* **Smart Caching:** Cache-Aside pattern implementation to significantly reduce database hits for read-heavy operations.
 
 ### 5. 📨 Enterprise Event-Driven Architecture (Apache Kafka)
-Decoupled heavy downstream tasks using a robust Kafka implementation:
-* **Idempotent Consumer:** Uses a unique `messageId` and a check-and-set pattern with a PostgreSQL `processed_event` table to absolutely prevent duplicate message processing.
-* **Smart Retry & Dead Letter Topic (DLT):** Configured Spring Retry (`FixedBackOff`). Transient failures are retried 3 times. Fatal errors or exhausted retries are gracefully routed to a `.DLT` graveyard topic for manual inspection.
-* **Poison Pill Prevention:** Uses `ErrorHandlingDeserializer` to safely catch malformed payloads mid-air, preventing infinite consumer crash-loops.
-* **Reliable Producer:** Configured with `acks=all` and `enable.idempotence=true` for zero message loss.
+* **Idempotent Consumer:** Uses a unique `messageId` and a check-and-set pattern to absolutely prevent duplicate message processing.
+* **Smart Retry & Dead Letter Topic (DLT):** Configured Spring Retry (`FixedBackOff`). Exhausted retries are gracefully routed to a `.DLT` graveyard topic.
 
-### 6. 🐳 Enterprise-Grade Dockerization (DevOps)
-* **Custom Bridge Networking:** The entire infrastructure (DB, Redis, Kafka) is isolated within a custom Docker network (`smart-ticket-net`). External ports are intentionally closed; they can only be reached internally by the Spring Boot application (Port 8080).
-* **Resource Limits:** Strict CPU and Memory `limits` and `reservations` are defined in `docker-compose.yml` to prevent RAM-heavy containers from causing OS-level Out-Of-Memory (OOM) kills.
+### 6. 🐳 Enterprise-Grade Dockerization (DevSecOps)
+* **Zero-Hardcoding Security:** Passwords and JWT secrets are injected dynamically via `.env` environment variables.
+* **Custom Bridge Networking:** The entire infrastructure (DB, Redis, Kafka) is isolated within a custom Docker network (`smart-ticket-net`).
 
 ---
 
@@ -76,40 +76,60 @@ Decoupled heavy downstream tasks using a robust Kafka implementation:
 | :--- | :--- |
 | **Language** | Java 21 (LTS) |
 | **Framework** | Spring Boot 3.2.x |
-| **Testing** | JUnit 5, Mockito, AssertJ, Testcontainers |
+| **Artificial Intelligence** | Spring AI, Ollama, Advanced RAG, Tool Calling |
+| **Testing & CI/CD** | JUnit 5, Testcontainers, Mockito, GitHub Actions |
 | **Message Broker** | Apache Kafka, Spring Kafka |
-| **Database** | PostgreSQL & Spring Data JPA |
+| **Database & Vector Store** | PostgreSQL, `pgvector` & Spring Data JPA |
 | **Caching & In-Memory** | Redis, Redisson (Distributed Locks & Rate Limiting) |
-| **Architecture** | MapStruct, Lombok, Global Exception Handler |
-| **DevOps** | Docker, Docker Compose (Resource Limits & Isolated Networks) |
+| **DevSecOps** | Docker, Docker Compose, `.env` Secret Management |
 | **Security** | Spring Security 6, JSON Web Tokens (JWT) |
-| **Docs** | OpenAPI / Swagger UI |
 
 ---
 
 ## ⚙️ How to Run Locally
 
-Since the project is strictly Dockerized with custom networks, you can run the entire secure stack with a single command.
+Since the project is strictly Dockerized and secured with environment variables, follow these steps to spin up the production-parity environment:
+
+### Prerequisites
+* Docker & Docker Compose installed.
+* Ollama installed locally.
+
+### 1. Start Local LLM Models (Ollama)
+Open your terminal and pull the required models for the AI Agent:
+
+```bash
+ollama run llama3
+ollama run nomic-embed-text
+```
+
+### 2. Setup Environment Variables
+Create a .env file in the root directory and configure your secrets:
+```bash
+DB_USER=postgres
+DB_PASSWORD=your_secure_db_password
+DB_NAME=smartticket
+REDIS_PASSWORD=your_secure_redis_password
+JWT_SECRET=your_base64_encoded_jwt_secret_key
+```
 
 1.  **Clone the repository:**
     ```bash
     git clone [https://github.com/efeerturk7/smart-ticket.git](https://github.com/efeerturk7/smart-ticket.git)
     cd smart-ticket
     ```
-
 2.  **Start with Docker Compose (Builds the App & Infrastructure):**
     ```bash
     docker-compose up -d --build
     ```
-
 3.  **Access the App:**
     * **Swagger UI Documentation:** `http://localhost:8080/swagger-ui/index.html`
     * *Note: Direct external access to PostgreSQL (5432), Redis (6379), and Kafka (9092) is disabled by design for security. All traffic must route through the Spring Boot API (8080).*
 
 ---
-
 ### 👨‍💻 Author
 **Bahadır Efe ERTÜRK** - Backend Developer
 
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/efeerturk7/)
 [![GitHub](https://img.shields.io/badge/GitHub-Follow-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/efeerturk7)
+
+
