@@ -36,10 +36,7 @@ class TicketServiceIntegrationTest {
 			.withExposedPorts(6379);
 
 	@Container
-	static KafkaContainer kafka = new KafkaContainer(
-			DockerImageName.parse("confluentinc/cp-kafka:latest")
-					.asCompatibleSubstituteFor("apache/kafka")
-	);
+	static KafkaContainer kafka = new KafkaContainer(DockerImageName.parse("apache/kafka:3.7.0"));
 
 
 	@DynamicPropertySource
