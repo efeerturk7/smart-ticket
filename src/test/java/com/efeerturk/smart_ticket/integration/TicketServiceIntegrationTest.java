@@ -35,8 +35,9 @@ class TicketServiceIntegrationTest {
 			.withPassword("password");;
 
 	@Container
-	static GenericContainer<?> redis = new GenericContainer<>("redis:7-alpine")
-			.withExposedPorts(6379);
+	static GenericContainer<?> redis = new GenericContainer<>(DockerImageName.parse("redis:7-alpine"))
+			.withExposedPorts(6379)
+			.withCommand("redis-server --requirepass password");
 
 	@Container
 	static KafkaContainer kafka = new KafkaContainer(DockerImageName.parse("apache/kafka:3.7.0"));
@@ -52,6 +53,12 @@ class TicketServiceIntegrationTest {
 		registry.add("spring.data.redis.port", redis::getFirstMappedPort);
 
 		registry.add("spring.kafka.bootstrap-servers", kafka::getBootstrapServers);
+	}
+	@DynamicPropertySource
+	static void setProperties(DynamicPropertyRegistry registry) {
+		registry.add("spring.data.redis.host", redis::getHost);
+		registry.add("spring.data.redis.port", () -> redis.getMappedPort(6379));
+		registry.add("spring.data.redis.password", () -> "password");
 	}
 
 
