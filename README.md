@@ -126,7 +126,7 @@ JWT_SECRET=your_base64_encoded_jwt_secret_key
     * *Note: Direct external access to PostgreSQL (5432), Redis (6379), and Kafka (9092) is disabled by design for security. All traffic must route through the Spring Boot API (8080).*
 
 ---
-### 👨‍💻 Author
+###  Author
 **Bahadır Efe ERTÜRK** - Backend Developer
 
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/efeerturk7/)
